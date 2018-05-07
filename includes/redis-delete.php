@@ -7,6 +7,17 @@ global $myredis, $rt_wp_nginx_helper, $redis_api, $lua, $rt_wp_nginx_purger;
 
 $host = $rt_wp_nginx_helper->options['redis_hostname'];
 $port = $rt_wp_nginx_helper->options['redis_port'];
+
+// Check if we have REDIS_URL from environment variables and set hostname and port accordingly
+if (!empty(getenv('REDIS_URL'))) {
+    $env = parse_url(getenv('REDIS_URL'));
+    $scheme = $env['scheme'];
+    $host = $env['host'];
+    $port = $env['port'];
+    $pass = $env['pass'];
+    unset($env);
+}
+
 $redis_api = '';
 
 if ( class_exists( 'Redis' ) ) { // Use PHP5-Redis if installed.
@@ -24,12 +35,23 @@ if ( class_exists( 'Redis' ) ) { // Use PHP5-Redis if installed.
         require_once 'predis.php';
     }
     Predis\Autoloader::register();
-    
-    //redis server parameter
-    $myredis = new Predis\Client( [
-        'host' => $host,
-        'port' => $port,
-    ] );
+
+    // Check if we have redis with authentication from env
+    if ( isset($pass) ) {
+        //redis server parameter from env
+        $myredis = new Predis\Client( [
+            'host'     => $host,
+            'port'     => $port,
+            'scheme'   => $scheme,
+            'password' => $pass,
+        ] );
+    } else {
+        //redis server parameter
+        $myredis = new Predis\Client( [
+            'host' => $host,
+            'port' => $port,
+        ] );
+    }
     //connect
     try {
         $myredis->connect();
