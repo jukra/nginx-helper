@@ -39,7 +39,7 @@ if ( class_exists( 'Redis' ) ) { // Use PHP5-Redis if installed.
     Predis\Autoloader::register();
 
     // Check if we have redis with authentication from env
-    if ( isset($pass) ) {
+    if ( isset($pass) && isset($scheme) ) {
         //redis server parameter from env
         $myredis = new Predis\Client( [
             'host'     => $host,
@@ -47,7 +47,6 @@ if ( class_exists( 'Redis' ) ) { // Use PHP5-Redis if installed.
             'scheme'   => $scheme,
             'password' => $pass,
         ] );
-        var_dump($pass);
     } else {
         //redis server parameter
         $myredis = new Predis\Client( [
