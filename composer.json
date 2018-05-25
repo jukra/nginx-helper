@@ -10,8 +10,7 @@
         "homepage": "https://rtcamp.com"
     }],
     "minimum-stability": "dev",
-	"prefer-stable": true,
-    "type": "wordpress-plugin",
+    "prefer-stable": true,
     "support": {
 		"issues": "https://github.com/rtCamp/nginx-helper/issues",
 		"forum": "https://wordpress.org/support/plugin/nginx-helper",
